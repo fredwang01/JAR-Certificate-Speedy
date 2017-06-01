@@ -52,7 +52,7 @@ public byte[] getCerts(File file) {
 
 But before retrieving the certificates, we should read fully the JAR entry no matter if we use the contents. What on earth happened to the JAR entry reading include:
 * Parse the RSA(DSA/EC) file to retrieve the certificates, the data structure of certificates is described as ASN1 usually.
-* Verify the integrety of MF file and each entry in it with the SF file.
+* Verify the integrity of MF file and each entry in it with the SF file.
 * Read the JAR entry, usually need decompress from the archive, and calculate the digest of the contents of JAR entry readed fully in order to verify the entry integrity with the corresponding digest in the MF file.
 
 As we see above, if you just want to retrieve the certificates from JAR archive and speedy the process, we can optimize some unnecessary implementation. Because each entry in the archive signs with the same certificate(chain) on Android platform, we can get the certificates using any entry in the archive(usually the first one) which must satisfy the requirements:
@@ -80,6 +80,26 @@ The reason can be found out in the following code(`JarVerifier.java`):
 Because the directory entry and META-INF files are not described in the MF file, here `Attributes attributes = man.getAttributes(name);`  get `null` , which will result in the common ZIP InputStream instead of JarFileInputStream which can retrieve the certificates.
 
 In my custom implementation, we can retrieve the certificates by directly calling `Certificate[] certificates = jarEntry.getCertificates();`, without any MF verify, JAR entry read and verify, and checking the entry type.
+
+In short, if we only read entry contents, it is better to use ZIP API instead of JAR API.
+
+By the way, when constructing a JarFile object like `new JarFile(path)` or a ZipFile object like `new ZipFile(path)`, all entries meta data in the central directory readed and cached. Please refer to the following code(`ZipFile.java`):
+```
+private void readCentralDir() throws IOException {
+    ...
+    /*
+     * Seek to the first CDE and read all entries.
+     */
+    rafs = new RAFStream(mRaf, centralDirOffset);
+    bin = new BufferedInputStream(rafs, 4096);
+    for (int i = 0; i < numEntries; i++) {
+        ZipEntry newEntry = new ZipEntry(ler, bin);
+        mEntries.put(newEntry.getName(), newEntry);
+    }
+}
+```
+The advantage of this implementation is that it is mush faster to retrieve the entry meta data. But if there are too many entries in the archive and the name of entries is too long, this implementation may be a big memory burden.
+
 
 
 
