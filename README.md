@@ -1,6 +1,6 @@
 "# JAR-Certificate-Speedy" 
 
-JAR archive file extends ZIP archive file format. JAR archive contain META-INFO files which can be used to verify the integrity and certificates of entry in the archive. We can usually retrieve the certificates in the JAR archive using the following code fragment:
+JAR archive file extends ZIP archive file format. JAR archive contain META-INF files which can be used to verify the integrity and certificates of entry in the archive. We can usually retrieve the certificates in the JAR archive using the following code fragment:
 ```
 public byte[] getCerts(File file) {
         JarFile jarFile = null;
@@ -58,7 +58,7 @@ But before retrieving the certificates, we should read fully the JAR entry no ma
 As we see above, if you just want to retrieve the certificates from JAR archive and speedy the process, we can optimize some unnecessary implementation. Because each entry in the archive signs with the same certificate(chain) on Android platform, we can get the certificates using any entry in the archive(usually the first one) which must satisfy the requirements:
 * Can not use directory entry in the archive.
 * Can not use any META-INFO files in the archive.
-The reason can be found out in the following code(`JarVerifier.java`)
+The reason can be found out in the following code(`JarVerifier.java`):
 ```
     VerifierEntry initEntry(String name) {
         // If no manifest is present by the time an entry is found,
@@ -76,7 +76,7 @@ The reason can be found out in the following code(`JarVerifier.java`)
         ...
     }
 ```
-Because the directory entry and META-INFO files are not described in the MF file, here `Attributes attributes = man.getAttributes(name);`  get `null` , which will result in the common ZIP InputStream instead of JarFileInputStream which can retrieve the certificates.
+Because the directory entry and META-INF files are not described in the MF file, here `Attributes attributes = man.getAttributes(name);`  get `null` , which will result in the common ZIP InputStream instead of JarFileInputStream which can retrieve the certificates.
 
 In my custom implementation, we can retrieve the certificates by directly calling `Certificate[] certificates = jarEntry.getCertificates();`, without any MF verify, JAR entry read and verify, and checking the entry type.
 
