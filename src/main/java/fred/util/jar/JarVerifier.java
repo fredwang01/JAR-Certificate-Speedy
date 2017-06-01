@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import libcore.io.Base64;
-//import org.apache.harmony.
+
 
 /**
  * Non-public class used by {@link JarFile} and {@link JarInputStream} to manage
