@@ -51,7 +51,7 @@ public byte[] getCerts(File file) {
 ```
 
 But before retrieving the certificates, we should read fully the JAR entry no matter if we use the contents. What on earth happened to the JAR entry reading include:
-* Parse the RSA(DSA/EC) file to retrieve the certificates, the data structure of certificates is described as ASN1 usually.
+* Parse the RSA(DSA/EC) file to retrieve the certificates, the data structure of certificates is described as `ASN1` usually.
 * Verify the integrity of MF file and each entry in it with the SF file.
 * Read the JAR entry, usually need decompress from the archive, and calculate the digest of the contents of JAR entry readed fully in order to verify the entry integrity with the corresponding digest in the MF file.
 
