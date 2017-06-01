@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-// XXX: wgf put it in this package.
-/*package java.lang;*/
+
 package fred.util.jar;
 
 import java.nio.charset.Charset;
