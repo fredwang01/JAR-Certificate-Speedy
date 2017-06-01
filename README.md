@@ -57,7 +57,8 @@ But before retrieving the certificates, we should read fully the JAR entry no ma
 
 As we see above, if you just want to retrieve the certificates from JAR archive and speedy the process, we can optimize some unnecessary implementation. Because each entry in the archive signs with the same certificate(chain) on Android platform, we can get the certificates using any entry in the archive(usually the first one) which must satisfy the requirements:
 * Can not use directory entry in the archive.
-* Can not use any META-INFO files in the archive.
+* Can not use any META-INF files in the archive.
+
 The reason can be found out in the following code(`JarVerifier.java`):
 ```
     VerifierEntry initEntry(String name) {
