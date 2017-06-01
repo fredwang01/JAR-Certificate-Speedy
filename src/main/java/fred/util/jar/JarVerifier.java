@@ -183,7 +183,6 @@ class JarVerifier {
             return null;
         }
 
-        // NOTE: wgf. if entry is dir, here will get null. dir item not in manifest.
         Attributes attributes = man.getAttributes(name);
         // entry has no digest
         if (attributes == null) {
