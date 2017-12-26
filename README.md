@@ -1,6 +1,6 @@
 "# JAR-Certificate-Speedy" 
 
-JAR archive file extends ZIP archive file format. JAR archive contain META-INF files which can be used to verify the integrity and certificates of entry in the archive. We can usually retrieve the certificates in the JAR archive using the following code fragment:
+JAR archive file extends ZIP archive file format. JAR archive contain META-INF files which can be used to verify the integrity and certificates of entry in the archive. We can usually retrieve the public key in the JAR archive using the following code fragment:
 ```
 public byte[] getCerts(File file) {
         JarFile jarFile = null;
@@ -26,7 +26,7 @@ public byte[] getCerts(File file) {
                         return new byte[0];
                     }
                     X509Certificate cert = (X509Certificate) certificates[0];
-                    return cert.getEncoded();
+                    return cert.getPublicKey().getEncoded();
                 }
             }
             return new byte[0];
